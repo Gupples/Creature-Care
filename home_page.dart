@@ -31,6 +31,15 @@ class _HomePageState extends State<HomePage> {
     FirebaseAuth.instance.signOut();
   }
 
+  void clearControllers() {
+    nameController.clear();
+    speciesController.clear();
+    ageController.clear();
+    sizeController.clear();
+    genderController.clear();
+    notesController.clear();
+  }
+
   void openAnimalViewer(AnimalCard animal) {
     // Populate the controllers with the values.
     nameController.text = animal.name;
@@ -53,7 +62,10 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Name: "),
-                Text("\t\t\t\t${nameController.text}",),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(nameController.text,),
+                ),
                 SizedBox(height: 15,),
               ],
             ),
@@ -61,7 +73,10 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Gender: "),
-                Text("\t\t\t\t${genderController.text}",),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(genderController.text,),
+                ),
                 SizedBox(height: 15,),
               ],
             ),
@@ -69,7 +84,10 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Species: "),
-                Text("\t\t\t\t${speciesController.text}",),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(speciesController.text,),
+                ),
                 SizedBox(height: 15,),
               ],
             ),
@@ -77,7 +95,10 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Age: "),
-                Text("\t\t\t\t${ageController.text}",),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text("${ageController.text} years",),
+                ),
                 SizedBox(height: 15,),
               ],
             ),
@@ -85,7 +106,10 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Size: "),
-                Text("\t\t\t\t${sizeController.text}",),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(sizeController.text,),
+                ),
                 SizedBox(height: 15,),
               ],
             ),
@@ -95,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Notes: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text("${notesController.text}", maxLines: 5,),
+                  child: Text(notesController.text, maxLines: 5,),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -118,6 +142,9 @@ class _HomePageState extends State<HomePage> {
       speciesController.text = animal.species;
       sizeController.text = animal.size;
       notesController.text = animal.note;
+    } else {
+      // Clear the controllers
+      clearControllers();
     }
     showDialog(
       context: context, 
@@ -197,12 +224,7 @@ class _HomePageState extends State<HomePage> {
             }
 
               // Clear the input fields
-            nameController.clear();
-            speciesController.clear();
-            ageController.clear();
-            sizeController.clear();
-            genderController.clear();
-            notesController.clear();
+            clearControllers();
 
             // Close the box
             Navigator.pop(context);
