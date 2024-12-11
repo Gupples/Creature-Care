@@ -313,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                           // UPDATE
                           IconButton(
                             onPressed: () => openAnimalEditor(document: document), 
-                            icon: const Icon(Icons.settings),
+                            icon: const Icon(Icons.edit),
                             ),
                     
                           // DELETE
