@@ -32,8 +32,8 @@ class _HomePageState extends State<HomePage> {
   String sortBy = "Name";
   bool isDescending = true;
   final Map<String, bool> boolOptions = {
-    "Descending": false,
-    "Ascending": true,
+    "Descending": true,
+    "Ascending": false,
   };
 
   void signUserOut(BuildContext context) {
@@ -289,38 +289,49 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text("Sort by: "),
+
                 DropdownButton<String>(
-                  value: sortBy,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      sortBy = newValue!;
-                    });
-                  },
-                  items: [
-                    DropdownMenuItem(
-                      value: "Name",
-                      child: Text("Name"),
-                      ),
-                    DropdownMenuItem(
-                      value: "Gender",
-                      child: Text("Gender"),
-                      ),
-                    DropdownMenuItem(
-                      value: "Species",
-                      child: Text("Species"),
-                      ),
-                    DropdownMenuItem(
-                      value: "Age",
-                      child: Text("Age"),
-                      ),
-                    DropdownMenuItem(
-                      value: "Size",
-                      child: Text("Size"),
-                      ),
-                    ],
-                  ),
+                    value: sortBy,
+                    icon: Icon(Icons.arrow_drop_down_outlined),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.black,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        sortBy = newValue!;
+                      });
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        value: "Name",
+                        child: Text("Name"),
+                        ),
+                      DropdownMenuItem(
+                        value: "Gender",
+                        child: Text("Gender"),
+                        ),
+                      DropdownMenuItem(
+                        value: "Species",
+                        child: Text("Species"),
+                        ),
+                      DropdownMenuItem(
+                        value: "Age",
+                        child: Text("Age"),
+                        ),
+                      DropdownMenuItem(
+                        value: "Size",
+                        child: Text("Size"),
+                        ),
+                      ],
+                    ),
                   DropdownButton<bool>(
                     value: isDescending,
+                    icon: Icon(Icons.arrow_drop_down_outlined),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.black,
+                    ),
                     onChanged: (bool? newValue) {
                       setState(() {
                         isDescending = newValue!;

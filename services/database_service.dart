@@ -21,8 +21,9 @@ class DatabaseService {
     }
 
     // Get animals from the database - READ
-    Stream<QuerySnapshot> getAnimalStream(String orderBy, bool isDescending) {
-        final animalStream = _animalsRef.orderBy(orderBy, descending: isDescending).snapshots();
+    Stream<QuerySnapshot> getAnimalStream(String orderBy, bool isAscending) {
+      // descending is named this way to make it descending by default.
+        final animalStream = _animalsRef.orderBy(orderBy, descending: !isAscending).snapshots();
         return animalStream;
     }
 
