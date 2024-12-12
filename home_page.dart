@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:creature_care/components/animal_card.dart';
+import 'package:creature_care/components/animal.dart';
 import 'package:creature_care/services/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -25,7 +25,12 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController notesController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
 
+  // Database service operator
   final DatabaseService _databaseService = DatabaseService();
+
+  // Sorting variables
+  String sortBy = "Name";
+  bool isDescending = true;
 
   void signUserOut(BuildContext context) {
     FirebaseAuth.instance.signOut();
@@ -40,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     notesController.clear();
   }
 
-  void openAnimalViewer(AnimalCard animal) {
+  void openAnimalViewer(Animal animal) {
     // Populate the controllers with the values.
     nameController.text = animal.name;
     genderController.text = animal.gender;
@@ -135,7 +140,7 @@ class _HomePageState extends State<HomePage> {
 
     // Populate the controllers with any existing data
     if (document != null) {
-      final animal = document.data() as AnimalCard;
+      final animal = document.data() as Animal;
       nameController.text = animal.name;
       genderController.text = animal.gender;
       ageController.text = animal.age.toString();
@@ -202,7 +207,7 @@ class _HomePageState extends State<HomePage> {
             
             if (document == null) {
               // Add the new animal
-              _databaseService.addAnimal(AnimalCard(
+              _databaseService.addAnimal(Animal(
                 name: nameController.text, 
                 species: speciesController.text, 
                 age: double.tryParse(ageController.text) ?? 0.0, 
@@ -213,7 +218,7 @@ class _HomePageState extends State<HomePage> {
 
             } else {
               
-              _databaseService.updateAnimal(document.id, AnimalCard(
+              _databaseService.updateAnimal(document.id, Animal(
                 name: nameController.text, 
                 species: speciesController.text, 
                 age: double.tryParse(ageController.text) ?? 0.0, 
@@ -272,67 +277,95 @@ class _HomePageState extends State<HomePage> {
         onPressed: openAnimalEditor,
         child: const Icon(Icons.add),
         ),
-      body: StreamBuilder(
-        stream: _databaseService.getAnimalStream(), 
-        builder: (context, snapshot) {
-          // if we have data, get all the docs
-          if (snapshot.hasData) {
-            List<DocumentSnapshot> animalList = snapshot.data!.docs.where((doc) {
-              final data = doc.data() as AnimalCard;
-              return data.user == user.uid;
-            }).toList();
-            
-            // display as a list
-            return ListView.builder(
-              itemCount: animalList.length,
-              itemBuilder: (context, index) {
-                // Get each individual document
-                DocumentSnapshot document = animalList[index];
-
-                // Get the animal name from the document
-                AnimalCard data = document.data() as AnimalCard;
-                String nameText = data.name;
-
-                // display as a list tile.
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: GestureDetector(
-                    onTap: () => openAnimalViewer(data),
-                    child: ListTile(
-                      title: Text(nameText),
-                      subtitle: Text(data.species),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // VIEW
-                          IconButton(
-                            onPressed: () => openAnimalViewer(data), 
-                            icon: const Icon(Icons.remove_red_eye_outlined),
-                            ),
-                    
-                          // UPDATE
-                          IconButton(
-                            onPressed: () => openAnimalEditor(document: document), 
-                            icon: const Icon(Icons.edit),
-                            ),
-                    
-                          // DELETE
-                          IconButton(
-                            onPressed: () => _databaseService.deleteAnimal(document.id), 
-                            icon: const Icon(Icons.delete),
-                            ),
-                        ],
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Sort by: "),
+                DropdownButton<String>(
+                  value: sortBy,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      sortBy = newValue!;
+                    });
+                  },
+                  items: [
+                    DropdownMenuItem(
+                      value: "Name",
+                      child: Text("Name"),
                       ),
-                    
-                    ),
-                  ),
-                );
-              },
-            );
-          } else {
-            return const Text("Whoops! No animals!");
-          }
-        }),
+                  ],),
+              ],
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder(
+              stream: _databaseService.getAnimalStream(), 
+              builder: (context, snapshot) {
+                // if we have data, get all the docs
+                if (snapshot.hasData) {
+                  List<DocumentSnapshot> animalList = snapshot.data!.docs.where((doc) {
+                    final data = doc.data() as Animal;
+                    return data.user == user.uid;
+                  }).toList();
+                  
+                  // display as a list
+                  return ListView.builder(
+                    itemCount: animalList.length,
+                    itemBuilder: (context, index) {
+                      // Get each individual document
+                      DocumentSnapshot document = animalList[index];
+            
+                      // Get the animal name from the document
+                      Animal data = document.data() as Animal;
+                      String nameText = data.name;
+            
+                      // display as a list tile.
+                      return Card(
+                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: GestureDetector(
+                          onTap: () => openAnimalViewer(data),
+                          child: ListTile(
+                            title: Text(nameText),
+                            subtitle: Text(data.species),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // VIEW
+                                IconButton(
+                                  onPressed: () => openAnimalViewer(data), 
+                                  icon: const Icon(Icons.remove_red_eye_outlined),
+                                  ),
+                          
+                                // UPDATE
+                                IconButton(
+                                  onPressed: () => openAnimalEditor(document: document), 
+                                  icon: const Icon(Icons.edit),
+                                  ),
+                          
+                                // DELETE
+                                IconButton(
+                                  onPressed: () => _databaseService.deleteAnimal(document.id), 
+                                  icon: const Icon(Icons.delete),
+                                  ),
+                              ],
+                            ),
+                          
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Text("Whoops! No animals!");
+                }
+              }),
+          ),
+        ],
+      ),
     );
   }
 }

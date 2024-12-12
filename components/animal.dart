@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AnimalCard {
+class Animal {
   String name;
   String species;
   double age;
@@ -10,7 +10,7 @@ class AnimalCard {
   String note;
   String user;
 
-  AnimalCard({
+  Animal({
     required this.name,
     required this.species,
     required this.age,
@@ -20,7 +20,7 @@ class AnimalCard {
     required this.user,
   });
 
-  AnimalCard.fromJson(Map<String, Object?> json) : this(
+  Animal.fromJson(Map<String, Object?> json) : this(
     name: json["name"]! as String,
     species: json["species"]! as String,
     age: json["age"]! as double,
@@ -30,7 +30,7 @@ class AnimalCard {
     user: json["user"]! as String,
     );
 
-  AnimalCard copyWith({
+  Animal copyWith({
       String? name,
       String? species,
       double? age,
@@ -38,7 +38,7 @@ class AnimalCard {
       String? gender,
       String? note,
   }) {
-    return AnimalCard(
+    return Animal(
       name: name ?? this.name,
       species: species ?? this.species,
       age: age ?? this.age,

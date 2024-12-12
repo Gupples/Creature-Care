@@ -1,8 +1,8 @@
-// CONTINUE AnimalCard implementation at
+// CONTINUE Animal implementation at
 // https://youtu.be/G0rsszX4E9Q?feature=shared&t=608
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:creature_care/components/animal_card.dart';
+import 'package:creature_care/components/animal.dart';
 
 const String ANIMAL_COLLECTION_REF = "animal";
 
@@ -12,11 +12,11 @@ class DatabaseService {
     late final CollectionReference _animalsRef;
 
     DatabaseService() {
-        _animalsRef = _firestore.collection(ANIMAL_COLLECTION_REF).withConverter<AnimalCard>(fromFirestore: (snapshots, _) => AnimalCard.fromJson(snapshots.data()!), toFirestore: (animalCard, _) => animalCard.toJson());
+        _animalsRef = _firestore.collection(ANIMAL_COLLECTION_REF).withConverter<Animal>(fromFirestore: (snapshots, _) => Animal.fromJson(snapshots.data()!), toFirestore: (animalCard, _) => animalCard.toJson());
     }
 
     // Add an animal to Firestore - CREATE
-    Future<void> addAnimal(AnimalCard animal) async {
+    Future<void> addAnimal(Animal animal) async {
         _animalsRef.add(animal);
     }
 
@@ -32,7 +32,7 @@ class DatabaseService {
     https://www.youtube.com/watch?v=0x5imSrJATI */
 
     // Edit an existing animal - UPDATE
-    Future<void> updateAnimal(String docID, AnimalCard animal) {
+    Future<void> updateAnimal(String docID, Animal animal) {
         return _animalsRef.doc(docID).update(animal.toJson());
     }
 
