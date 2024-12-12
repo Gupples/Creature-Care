@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   Navigator.pop(context);
   // TODO
   if (e.code == 'invalid-email') {
-    debugPrint('No username with this email');
+    debugPrint('No user with this email');
     wrongEmailMessage();
   } else if (e.code == 'wrong-password') {
     debugPrint('Wrong password');
@@ -135,10 +135,11 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 25,
                   fontWeight: FontWeight.w700,
                 ),),
-              // username textfield
+                
+              // Email textfield
               InputTextfield(
                 controller: emailController,
-                hintText: 'Username',
+                hintText: 'Email',
                 obscureText: false,
               ),
             
