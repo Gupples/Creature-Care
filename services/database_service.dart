@@ -21,8 +21,8 @@ class DatabaseService {
     }
 
     // Get animals from the database - READ
-    Stream<QuerySnapshot> getAnimalStream() {
-        final animalStream = _animalsRef.orderBy('name', descending: false).snapshots();
+    Stream<QuerySnapshot> getAnimalStream(String orderBy, bool isDescending) {
+        final animalStream = _animalsRef.orderBy(orderBy, descending: isDescending).snapshots();
         return animalStream;
     }
 

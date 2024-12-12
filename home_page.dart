@@ -31,6 +31,10 @@ class _HomePageState extends State<HomePage> {
   // Sorting variables
   String sortBy = "Name";
   bool isDescending = true;
+  final Map<String, bool> boolOptions = {
+    "Descending": false,
+    "Ascending": true,
+  };
 
   void signUserOut(BuildContext context) {
     FirebaseAuth.instance.signOut();
@@ -282,7 +286,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text("Sort by: "),
                 DropdownButton<String>(
@@ -297,13 +301,46 @@ class _HomePageState extends State<HomePage> {
                       value: "Name",
                       child: Text("Name"),
                       ),
-                  ],),
+                    DropdownMenuItem(
+                      value: "Gender",
+                      child: Text("Gender"),
+                      ),
+                    DropdownMenuItem(
+                      value: "Species",
+                      child: Text("Species"),
+                      ),
+                    DropdownMenuItem(
+                      value: "Age",
+                      child: Text("Age"),
+                      ),
+                    DropdownMenuItem(
+                      value: "Size",
+                      child: Text("Size"),
+                      ),
+                    ],
+                  ),
+                  DropdownButton<bool>(
+                    value: isDescending,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isDescending = newValue!;
+                      });
+                    },
+                    items: boolOptions.entries.map<DropdownMenuItem<bool>>((entry) {
+                      return DropdownMenuItem<bool>(
+                        value: entry.value,
+                        child: Text(entry.key),
+                        );
+                    }, 
+                    ).toList(),)
               ],
             ),
           ),
           Expanded(
             child: StreamBuilder(
-              stream: _databaseService.getAnimalStream(), 
+              stream: _databaseService.getAnimalStream(
+                sortBy.toLowerCase(), 
+                isDescending), 
               builder: (context, snapshot) {
                 // if we have data, get all the docs
                 if (snapshot.hasData) {
