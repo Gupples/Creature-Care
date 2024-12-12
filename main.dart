@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const MyHomePage(title: 'Testing of Co-op programming'),
       home: Auth(),
+      debugShowCheckedModeBanner: false,
     ); // return MaterialApp
   }
 }
