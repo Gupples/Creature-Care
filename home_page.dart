@@ -21,9 +21,9 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController speciesController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
+  String? selectedGender = "Male";
 
   // Database service operator
   final DatabaseService _databaseService = DatabaseService();
@@ -45,19 +45,11 @@ class _HomePageState extends State<HomePage> {
     speciesController.clear();
     ageController.clear();
     sizeController.clear();
-    genderController.clear();
+    selectedGender = "Male";
     notesController.clear();
   }
 
   void openAnimalViewer(Animal animal) {
-    // Populate the controllers with the values.
-    nameController.text = animal.name;
-    genderController.text = animal.gender;
-    ageController.text = animal.age.toString();
-    speciesController.text = animal.species;
-    sizeController.text = animal.size;
-    notesController.text = animal.note;
-
     // Display the information.
     showDialog(
       context: context, 
@@ -73,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Name: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(nameController.text,),
+                  child: Text(animal.name),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -84,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Gender: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(genderController.text,),
+                  child: Text(animal.gender),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -95,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Species: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(speciesController.text,),
+                  child: Text(animal.species),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -106,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Age: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text("${ageController.text} years",),
+                  child: Text(animal.age.toString()),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -117,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Size: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(sizeController.text,),
+                  child: Text(animal.size),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -128,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                 Text("Notes: "),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(notesController.text, maxLines: 5,),
+                  child: Text(animal.note, maxLines: 5,),
                 ),
                 SizedBox(height: 15,),
               ],
@@ -146,7 +138,7 @@ class _HomePageState extends State<HomePage> {
     if (document != null) {
       final animal = document.data() as Animal;
       nameController.text = animal.name;
-      genderController.text = animal.gender;
+      selectedGender = animal.gender;
       ageController.text = animal.age.toString();
       speciesController.text = animal.species;
       sizeController.text = animal.size;
@@ -168,10 +160,36 @@ class _HomePageState extends State<HomePage> {
                 labelText: "Name",
               ),
             ),
-            TextField(
-              controller: genderController,
-              decoration: InputDecoration(
-                labelText: "Gender",
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Gender: ", style: TextStyle(fontSize: 16),),
+                  StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return DropdownButton<String>( 
+                      value: selectedGender,
+                      underline: Container(
+                        height: 2,
+                        color: Colors.white10,
+                      ), 
+                      hint: Text('Select Gender'), 
+                      items: <String>['Male', 'Female', 'Other'].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>( 
+                          value: value,
+                          child: Text(value,), 
+                          ); 
+                          }).toList(),
+                          onChanged: (String? newValue) { 
+                            setState(() { 
+                              selectedGender  = newValue; 
+                            }); 
+                          }, 
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
             TextField(
@@ -216,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                 species: speciesController.text, 
                 age: double.tryParse(ageController.text) ?? 0.0, 
                 size: sizeController.text, 
-                gender: genderController.text, 
+                gender: selectedGender!, 
                 note: notesController.text, 
                 user: user.uid));
 
@@ -227,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                 species: speciesController.text, 
                 age: double.tryParse(ageController.text) ?? 0.0, 
                 size: sizeController.text, 
-                gender: genderController.text, 
+                gender: selectedGender!, 
                 note: notesController.text, 
                 user: user.uid));
             }
