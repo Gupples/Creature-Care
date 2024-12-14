@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.white10,
                       ), 
                       hint: Text('Select Gender'), 
-                      items: <String>['Male', 'Female', 'Other'].map<DropdownMenuItem<String>>((String value) {
+                      items: <String>['Male', 'Female'].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>( 
                           value: value,
                           child: Text(value,), 
